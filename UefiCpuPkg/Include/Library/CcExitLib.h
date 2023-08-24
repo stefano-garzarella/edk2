@@ -242,4 +242,43 @@ CcExitHandleVe (
   IN OUT EFI_SYSTEM_CONTEXT  SystemContext
   );
 
+/**
+  Perform a SVSM_VTPM_CMD operation
+
+  Send the specified TPM command buffer to the SVSM vTPM.
+
+  @param[in, out] Buffer    The buffer should contain a marshalled TPM
+                            command. It will be used to return the
+                            marshalled TPM response.
+
+  @retval TRUE              The Command was processed
+  @retval FALSE             The Command was not processed
+
+**/
+BOOLEAN
+EFIAPI
+CcExitSnpVtpmCommand (
+  IN OUT UINT8  *Buffer
+  );
+
+/**
+  Perform a SVSM_VTPM_QUERY operation
+
+  Query the support provided by the SVSM vTPM.
+
+  @param[out] PlatformCommands    Will contain a bitmap indicating the
+                                  supported vTPM platform commands.
+  @param[out] Features            Will contain a bitmap indicating the
+                                  supported vTPM features.
+
+  @retval TRUE                    The query was processed
+  @retval FALSE                   The query was not processed
+
+**/
+BOOLEAN
+EFIAPI
+CcExitSnpVtpmQuery (
+  OUT UINT64  *PlatformCommands,
+  OUT UINT64  *Features
+  );
 #endif

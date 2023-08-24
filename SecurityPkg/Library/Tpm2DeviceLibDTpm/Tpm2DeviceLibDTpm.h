@@ -64,4 +64,39 @@ InternalTpm2DeviceLibDTpmCommonConstructor (
   VOID
   );
 
+/**
+  Check if the SVSM based TPM supports the SEND_TPM_COMMAND
+  platform command.
+
+  @retval TRUE    SEND_TPM_COMMAND is supported.
+  @retval FALSE   SEND_TPM_COMMAND is not supported.
+
+**/
+BOOLEAN
+Tpm2IsSvsmTpmCommandSupported (
+  VOID
+  );
+
+/**
+  Send a command to TPM for execution and return response data.
+
+  @param[in]      BufferIn      Buffer for command data.
+  @param[in]      SizeIn        Size of command data.
+  @param[out]     BufferOut     Buffer for response data.
+  @param[in, out] SizeOut       Size of response data.
+
+  @retval EFI_SUCCESS           Operation completed successfully.
+  @retval EFI_BUFFER_TOO_SMALL  Response data buffer is too small.
+  @retval EFI_DEVICE_ERROR      Unexpected device behavior.
+  @retval EFI_UNSUPPORTED       Unsupported TPM version
+
+**/
+EFI_STATUS
+Tpm2SvsmTpmCommand (
+  IN     UINT8                 *BufferIn,
+  IN     UINT32                SizeIn,
+  OUT    UINT8                 *BufferOut,
+  IN OUT UINT32                *SizeOut
+  );
+
 #endif // _TPM2_DEVICE_LIB_DTPM_H_

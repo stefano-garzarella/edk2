@@ -530,3 +530,84 @@ CcExitSnpVmsaRmpAdjust (
   return CcExitSnpSvsmPresent () ? SvsmVmsaRmpAdjust (Vmsa, ApicId, SetVmsa)
                                  : BaseVmsaRmpAdjust (Vmsa, ApicId, SetVmsa);
 }
+
+/**
+  Perform a SVSM_VTPM_CMD operation
+
+  Send the specified TPM command buffer to the SVSM vTPM.
+
+  @param[in, out] Buffer    The buffer should contain a marshalled TPM
+                            command. It will be used to return the
+                            marshalled TPM response.
+
+  @retval TRUE              The Command was processed
+  @retval FALSE             The Command was not processed
+
+**/
+BOOLEAN
+EFIAPI
+CcExitSnpVtpmCommand (
+  IN OUT UINT8  *Buffer
+  )
+{
+  SVSM_CALL_DATA  SvsmCallData;
+  SVSM_FUNCTION   Function;
+  UINTN           Ret;
+
+  if (!CcExitSnpSvsmPresent ())
+    return FALSE;
+
+  Function.Id.Protocol = 2;
+  Function.Id.CallId = 1;
+
+  SvsmCallData.Caa = SvsmGetCaa ();
+  SvsmCallData.RaxIn = Function.Uint64;
+  SvsmCallData.RcxIn = (UINT64)(UINTN)Buffer;
+
+  Ret = SvsmMsrProtocol (&SvsmCallData);
+  return (Ret == 0) ? TRUE : FALSE;
+}
+
+/**
+  Perform a SVSM_VTPM_QUERY operation
+
+  Query the support provided by the SVSM vTPM.
+
+  @param[out] PlatformCommands    Will contain a bitmap indicating the
+                                  supported vTPM platform commands.
+  @param[out] Features            Will contain a bitmap indicating the
+                                  supported vTPM features.
+
+  @retval TRUE                    The query was processed
+  @retval FALSE                   The query was not processed
+
+**/
+BOOLEAN
+EFIAPI
+CcExitSnpVtpmQuery (
+  OUT UINT64 *PlatformCommands,
+  OUT UINT64 *Features
+  )
+{
+  SVSM_CALL_DATA  SvsmCallData;
+  SVSM_FUNCTION   Function;
+  UINTN           Ret;
+
+  if (!CcExitSnpSvsmPresent ())
+    return FALSE;
+
+  Function.Id.Protocol = 2;
+  Function.Id.CallId = 0;
+
+  SvsmCallData.Caa = SvsmGetCaa ();
+  SvsmCallData.RaxIn = Function.Uint64;
+
+  Ret = SvsmMsrProtocol (&SvsmCallData);
+
+  if (Ret)
+    return FALSE;
+
+  *PlatformCommands = SvsmCallData.RcxOut;
+  *Features = SvsmCallData.RdxOut;
+  return TRUE;
+}
