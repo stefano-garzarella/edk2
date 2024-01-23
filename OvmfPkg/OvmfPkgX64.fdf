@@ -335,6 +335,7 @@ INF  ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
 INF  ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf
 INF  OvmfPkg/LinuxInitrdDynamicShellCommand/LinuxInitrdDynamicShellCommand.inf
 !endif
+INF OvmfPkg/AmdSev/SecretDxe/SecretDxe.inf
 !if $(BUILD_SHELL) == TRUE
 INF  ShellPkg/Application/Shell/Shell.inf
 !endif

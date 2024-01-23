@@ -1007,6 +1007,7 @@
       gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
   }
 !endif
+  OvmfPkg/AmdSev/SecretDxe/SecretDxe.inf
 !if $(BUILD_SHELL) == TRUE
   ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
