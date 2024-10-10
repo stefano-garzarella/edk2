@@ -69,6 +69,8 @@ VirtioRngGetInfo (
   OUT     EFI_RNG_ALGORITHM  *RNGAlgorithmList
   )
 {
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
+
   if ((This == NULL) || (RNGAlgorithmListSize == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
@@ -84,6 +86,8 @@ VirtioRngGetInfo (
 
   *RNGAlgorithmListSize = sizeof (EFI_RNG_ALGORITHM);
   CopyGuid (RNGAlgorithmList, &gEfiRngAlgorithmRaw);
+
+  DEBUG ((DEBUG_INFO, "%a EFI_SUCCESS\n", __func__));
 
   return EFI_SUCCESS;
 }
@@ -136,6 +140,8 @@ VirtioRngGetRNG (
   EFI_STATUS            Status;
   EFI_PHYSICAL_ADDRESS  DeviceAddress;
   VOID                  *Mapping;
+
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
 
   if ((This == NULL) || (RNGValueLength == 0) || (RNGValue == NULL)) {
     return EFI_INVALID_PARAMETER;
@@ -213,6 +219,8 @@ VirtioRngGetRNG (
     RNGValue[Index] = Buffer[Index];
   }
 
+  DEBUG ((DEBUG_INFO, "%a EFI_SUCCESS\n", __func__));
+
   Status = EFI_SUCCESS;
 
 UnmapBuffer:
@@ -241,6 +249,8 @@ VirtioRngInit (
   UINT16      QueueSize;
   UINT64      Features;
   UINT64      RingBaseShift;
+
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
 
   //
   // Execute virtio-0.9.5, 2.2.1 Device Initialization Sequence.
@@ -383,6 +393,8 @@ VirtioRngInit (
   Dev->Rng.GetInfo = VirtioRngGetInfo;
   Dev->Rng.GetRNG  = VirtioRngGetRNG;
 
+  DEBUG ((DEBUG_INFO, "%a EFI_SUCCESS\n", __func__));
+
   return EFI_SUCCESS;
 
 UnmapQueue:
@@ -398,6 +410,8 @@ Failed:
   //
   NextDevStat |= VSTAT_FAILED;
   Dev->VirtIo->SetDeviceStatus (Dev->VirtIo, NextDevStat);
+
+  DEBUG ((DEBUG_INFO, "%a failed: Status %r\n", __func__, Status));
 
   return Status; // reached only via Failed above
 }
@@ -474,6 +488,8 @@ VirtioRngDriverBindingSupported (
   EFI_STATUS              Status;
   VIRTIO_DEVICE_PROTOCOL  *VirtIo;
 
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
+
   //
   // Attempt to open the device with the VirtIo set of interfaces. On success,
   // the protocol is "instantiated" for the VirtIo device. Covers duplicate
@@ -490,6 +506,7 @@ VirtioRngDriverBindingSupported (
                                               // the device; to be released
                   );
   if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_INFO, "%a Status: %r\n", __func__, Status));
     return Status;
   }
 
@@ -507,6 +524,9 @@ VirtioRngDriverBindingSupported (
          This->DriverBindingHandle,
          DeviceHandle
          );
+
+  DEBUG ((DEBUG_INFO, "%a Status: %r\n", __func__, Status));
+
   return Status;
 }
 
@@ -522,8 +542,11 @@ VirtioRngDriverBindingStart (
   VIRTIO_RNG_DEV  *Dev;
   EFI_STATUS      Status;
 
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
+
   Dev = (VIRTIO_RNG_DEV *)AllocateZeroPool (sizeof *Dev);
   if (Dev == NULL) {
+    DEBUG ((DEBUG_INFO, "%a EFI_OUT_OF_RESOURCES\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -573,6 +596,8 @@ VirtioRngDriverBindingStart (
     goto CloseExitBoot;
   }
 
+  DEBUG ((DEBUG_INFO, "%a EFI_SUCCESS\n", __func__));
+
   return EFI_SUCCESS;
 
 CloseExitBoot:
@@ -591,6 +616,8 @@ CloseVirtIo:
 
 FreeVirtioRng:
   FreePool (Dev);
+
+  DEBUG ((DEBUG_INFO, "%a failed: Status %r\n", __func__, Status));
 
   return Status;
 }

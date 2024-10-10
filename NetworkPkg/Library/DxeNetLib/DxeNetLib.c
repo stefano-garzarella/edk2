@@ -928,6 +928,8 @@ PseudoRandom (
   EFI_STATUS        Status;
   UINTN             AlgorithmIndex;
 
+  DEBUG ((DEBUG_INFO, "%a entrypoint\n", __func__));
+
   if ((Output == NULL) || (OutputLength == 0)) {
     return EFI_INVALID_PARAMETER;
   }
