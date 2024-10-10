@@ -760,6 +760,7 @@ PrepareLpcBridgeDevicePath (
   EfiBootManagerUpdateConsoleVariable (ConIn, DevicePath, NULL);
   EfiBootManagerUpdateConsoleVariable (ErrOut, DevicePath, NULL);
 
+#if 1
   //
   // Register COM2
   //
@@ -797,6 +798,7 @@ PrepareLpcBridgeDevicePath (
   EfiBootManagerUpdateConsoleVariable (ConOut, DevicePath, NULL);
   EfiBootManagerUpdateConsoleVariable (ConIn, DevicePath, NULL);
   EfiBootManagerUpdateConsoleVariable (ErrOut, DevicePath, NULL);
+#endif
 
   return EFI_SUCCESS;
 }
